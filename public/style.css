@@ -12,3 +12,7 @@ th {
 th.active {
     background-color: #f1f1f1;
 }
+/* td{
+    display: flex;
+    justify-content: center;
+} */

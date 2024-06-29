@@ -11,19 +11,23 @@ function createTable(data) {
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');
 
-    const headers = ['ID', 'Nome', 'Idade'];
+    const headers = ['ID', 'Nome', 'Idade', 'Remove'];
     const headerRow = document.createElement('tr');
 
     headers.forEach((header, index) => {
         const th = document.createElement('th');
         th.textContent = header;
         th.dataset.type = typeof Object.values(data[0])[index];
-        th.addEventListener('click', () => {
-            const ordered = !!th.ordered
-            document.querySelectorAll('#myTable th').forEach(th => th.ordered = undefined);
-            th.ordered = !ordered
-            sortTable(index, th.dataset.type, th.ordered);
-        });
+
+        if (th.dataset !== 'ID') {
+            th.addEventListener('click', () => {
+                const ordered = !!th.ordered
+                document.querySelectorAll('#myTable th').forEach(th => th.ordered = undefined);
+                th.ordered = !ordered
+                sortTable(index, th.dataset.type, th.ordered);
+            });
+        }
+
         headerRow.appendChild(th);
     });
 
@@ -38,7 +42,7 @@ function loadTable(data) {
     const table = document.getElementById('myTable').getElementsByTagName('tbody')[0];
 
     table.replaceChildren()
-    
+
     data.forEach(item => {
         const row = table.insertRow();
 
@@ -46,14 +50,15 @@ function loadTable(data) {
             const cell = row.insertCell();
             cell.textContent = text;
 
-            cell.addEventListener('dblclick',()=>{
+            cell.addEventListener('dblclick', () => {
                 cell.setAttribute('contenteditable', true);
-                
-                document.addEventListener('click',(element)=>{
-                    if(element.target !== cell){
-                        cell.removeAttribute('contenteditable')}
+
+                document.addEventListener('click', (element) => {
+                    if (element.target !== cell) {
+                        cell.removeAttribute('contenteditable')
+                    }
                 })
-            },cell)
+            }, cell)
 
             cell.addEventListener('input', () => {
                 const rowIndex = row.rowIndex - 1;
@@ -62,6 +67,20 @@ function loadTable(data) {
                 data[rowIndex][key] = cell.textContent;
             });
         });
+        
+        const removeButton = document.createElement('button')
+        removeButton.textContent = 'X'
+        const remove = row.insertCell()
+
+        removeButton.addEventListener('click',()=>{
+            const index = data.findIndex(a => a.id === item.id)
+            data.splice(index, 1)
+            loadTable(data)
+        })
+
+        remove.append(
+            removeButton
+        )
     });
 }
 
@@ -85,8 +104,29 @@ function sortTable(columnIndex, type, ordered) {
         loadTable(sortedData);
     }
 }
+const table = createTable(data)
+const submit = document.createElement('button')
+const newRow = document.createElement('button')
+submit.textContent = 'Save table'
+newRow.textContent = 'Nova linha'
 
-document.getElementById('table-container').appendChild(
-    createTable(data)
+submit.addEventListener('click', () => {
+    console.log(JSON.stringify(data))
+})
+
+newRow.addEventListener('click', () => {
+    data.push({
+        id:data.length + 1,
+        nome:'Unnamed',
+        idade:0,
+    })
+loadTable(data);
+
+})
+
+document.getElementById('table-container').append(
+    table,
+    newRow,
+    submit
 );
 loadTable(data);
