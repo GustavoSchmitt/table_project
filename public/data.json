@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "nome": "Alice",
+        "idade": 25
+    },
+    {
+        "id": 2,
+        "nome": "Bob",
+        "idade": 30
+    },
+    {
+        "id": 3,
+        "nome": "Charlie",
+        "idade": 35
+    },
+    {
+        "id": 4,
+        "nome": "Zac",
+        "idade": 12
+    },
+    {
+        "id": 5,
+        "nome": "Darwin",
+        "idade": 11
+    },
+    {
+        "id": 6,
+        "nome": "Anais",
+        "idade": 9
+    },
+    {
+        "id": 7,
+        "nome": "Nicole",
+        "idade": 32
+    },
+    {
+        "id": 8,
+        "nome": "Ricardo",
+        "idade": 39
+    }
+]
