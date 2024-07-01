@@ -1,6 +1,6 @@
 
 import * as json from './data.json' with { type: 'json' }
-import fs from 'node:fs';
+// import fs from 'node:fs';
 
 const data = json.default
 
