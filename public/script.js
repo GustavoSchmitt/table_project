@@ -1,8 +1,13 @@
 
 import * as json from './data.json' with { type: 'json' }
+import fs from 'node:fs';
 
 const data = json.default
 
+// const jsonFile = fs.readFile('/data.json', (err, data) => {
+//     if (err) throw err;
+//     console.log(data);
+//   });
 
 function createTable(data) {
     const table = document.createElement('table');
@@ -19,14 +24,13 @@ function createTable(data) {
         th.textContent = header;
         th.dataset.type = typeof Object.values(data[0])[index];
 
-        if (th.dataset !== 'ID') {
-            th.addEventListener('click', () => {
-                const ordered = !!th.ordered
-                document.querySelectorAll('#myTable th').forEach(th => th.ordered = undefined);
-                th.ordered = !ordered
-                sortTable(index, th.dataset.type, th.ordered);
-            });
-        }
+        th.addEventListener('click', () => {
+            const ordered = !!th.ordered
+            document.querySelectorAll('#myTable th').forEach(th => th.ordered = undefined);
+            th.ordered = !ordered
+            sortTable(index, th.dataset.type, th.ordered);
+        });
+
 
         headerRow.appendChild(th);
     });
@@ -46,19 +50,21 @@ function loadTable(data) {
     data.forEach(item => {
         const row = table.insertRow();
 
-        Object.values(item).forEach(text => {
+        Object.values(item).forEach((text,i) => {
             const cell = row.insertCell();
             cell.textContent = text;
 
-            cell.addEventListener('dblclick', () => {
-                cell.setAttribute('contenteditable', true);
+            if (i) {
+                cell.addEventListener('dblclick', () => {
+                    cell.setAttribute('contenteditable', true);
 
-                document.addEventListener('click', (element) => {
-                    if (element.target !== cell) {
-                        cell.removeAttribute('contenteditable')
-                    }
-                })
-            }, cell)
+                    document.addEventListener('click', (element) => {
+                        if (element.target !== cell) {
+                            cell.removeAttribute('contenteditable')
+                        }
+                    })
+                }, cell)
+            }
 
             cell.addEventListener('input', () => {
                 const rowIndex = row.rowIndex - 1;
@@ -67,12 +73,12 @@ function loadTable(data) {
                 data[rowIndex][key] = cell.textContent;
             });
         });
-        
+
         const removeButton = document.createElement('button')
         removeButton.textContent = 'X'
         const remove = row.insertCell()
 
-        removeButton.addEventListener('click',()=>{
+        removeButton.addEventListener('click', () => {
             const index = data.findIndex(a => a.id === item.id)
             data.splice(index, 1)
             loadTable(data)
@@ -112,15 +118,16 @@ newRow.textContent = 'Nova linha'
 
 submit.addEventListener('click', () => {
     console.log(JSON.stringify(data))
-})
+    
+    })
 
 newRow.addEventListener('click', () => {
     data.push({
-        id:data.length + 1,
-        nome:'Unnamed',
-        idade:0,
+        id: data.length + 1,
+        nome: 'Unnamed',
+        idade: 0,
     })
-loadTable(data);
+    loadTable(data);
 
 })
 
